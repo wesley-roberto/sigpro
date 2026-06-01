@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { LoginCredentials } from '../types';
+
+interface LoginForm {
+  email: string;
+  password: string;
+}
 
 const LoginPage: React.FC = () => {
-  const [credentials, setCredentials] = useState<LoginCredentials>({
+  const [credentials, setCredentials] = useState<LoginForm>({
     email: '',
     password: '',
   });

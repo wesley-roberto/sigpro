@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { dashboardService } from '../services/api';
-import { DashboardData } from '../types';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import type { DashboardData } from '../types';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const DashboardPage: React.FC = () => {
-  const { user } = useAuth();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -13,7 +11,8 @@ const DashboardPage: React.FC = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const data = await dashboardService.getDashboard();
+        const response = await dashboardService.getDashboard();
+        const data = (response as unknown as { data: DashboardData }).data;
         setDashboardData(data);
       } catch (err) {
         setError('Erro ao carregar dados do dashboard');
@@ -137,13 +136,13 @@ const DashboardPage: React.FC = () => {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }: { name?: string; percent?: number }) => `${name || ''} ${((percent || 0) * 100).toFixed(0)}%`}
                 outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
               >
-                {dashboardData.projectsByStatus.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getStatusColor(entry.status)} />
+                {dashboardData.projectsByStatus.map((_entry, index) => (
+                  <Cell key={`cell-${index}`} fill={getStatusColor(_entry.status)} />
                 ))}
               </Pie>
               <Tooltip />
@@ -163,7 +162,7 @@ const DashboardPage: React.FC = () => {
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" fill={[ '#059669', '#EF4444' ]} />
+              <Bar dataKey="value" fill="#059669" />
             </BarChart>
           </ResponsiveContainer>
         </div>

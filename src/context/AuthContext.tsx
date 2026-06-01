@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthContextType, LoginCredentials } from '../types';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import type { User, AuthContextType, LoginCredentials } from '../types';
 import { authService } from '../services/api';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,7 +27,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (token) {
       authService.getCurrentUser()
         .then(userData => {
-          setUser(userData);
+          const u: User = Array.isArray(userData) ? userData[0] : userData;
+          setUser(u);
           setIsAuthenticated(true);
         })
         .catch(() => {
@@ -42,13 +44,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
-      const { user, token } = await authService.login(credentials.email, credentials.password);
-      setUser(user);
+      const response = await authService.login(credentials.email, credentials.password);
+      const result = response as unknown as { user: User; token: string };
+      setUser(result.user);
       setIsAuthenticated(true);
-      localStorage.setItem('token', token);
+      localStorage.setItem('token', result.token);
       return true;
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch {
       return false;
     }
   };

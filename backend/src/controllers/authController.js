@@ -1,4 +1,5 @@
-const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../middleware/auth');
 
 // Mock data - In production, this would come from a database
 const mockUsers = [
@@ -6,8 +7,17 @@ const mockUsers = [
     id: '1',
     name: 'Administrador',
     email: 'admin@sigpro.com',
-    password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+    password: 'admin123',
     role: 'admin',
+    createdAt: new Date(),
+    updatedAt: new Date()
+  },
+  {
+    id: '2',
+    name: 'Gestor',
+    email: 'gestor@sigpro.com',
+    password: 'gestor123',
+    role: 'manager',
     createdAt: new Date(),
     updatedAt: new Date()
   }

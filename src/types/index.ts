@@ -85,7 +85,7 @@ export interface DashboardData {
   projectsByCompany: { name: string; count: number }[];
   projectsByProduct: { name: string; count: number }[];
   projectsByStatus: { status: ProjectStatus; count: number }[];
-  deliveredVsDelayed: { delivered: number; delayed: number }[];
+  deliveredVsDelayed: { delivered: number; delayed: number };
   averageDeliveryTime: number;
   performanceByCompany: { name: string; performance: number }[];
   performanceByConcessionaire: { name: string; performance: number }[];

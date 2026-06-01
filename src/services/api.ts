@@ -1,4 +1,4 @@
-import { User, Company, Concessionaire, Product, Project, Schedule, DashboardData } from '../types';
+import type { User, Company, Concessionaire, Product, Project, Schedule, DashboardData } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 

@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { companyService, concessionaireService, productService } from '../services/api';
+import { companyService, concessionaireService, productService, projectService } from '../services/api';
+import type { Company, Concessionaire, Product } from '../types';
+
+interface ProjectForm {
+  concessionaireId: string;
+  productId: string;
+  companyId: string;
+  signatureDate: string;
+  contractualDeadline: string;
+  deliveryDeadline: string;
+  status: string;
+  observations: string;
+  responsibleId: string;
+}
 
 const ProjectRegisterPage: React.FC = () => {
   const { user } = useAuth();
-  const [companies, setCompanies] = useState([]);
-  const [concessionaires, setConcessionaires] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [formData, setFormData] = useState({
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [concessionaires, setConcessionaires] = useState<Concessionaire[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [formData, setFormData] = useState<ProjectForm>({
     concessionaireId: '',
     productId: '',
     companyId: '',
@@ -51,11 +64,21 @@ const ProjectRegisterPage: React.FC = () => {
     setSuccess('');
 
     try {
-      await projectService.create(formData);
+      const projectData = {
+        concessionaireId: formData.concessionaireId,
+        productId: formData.productId,
+        companyId: formData.companyId,
+        signatureDate: new Date(formData.signatureDate),
+        contractualDeadline: new Date(formData.contractualDeadline),
+        deliveryDeadline: new Date(formData.deliveryDeadline),
+        status: formData.status as any,
+        observations: formData.observations,
+        responsibleId: formData.responsibleId,
+      };
+
+      await projectService.create(projectData);
       setSuccess('Projeto cadastrado com sucesso!');
-      // Reset form (keeping responsibleId)
-      setFormData(prev => ({
-        ...prev,
+      setFormData({
         concessionaireId: '',
         productId: '',
         companyId: '',
@@ -65,7 +88,7 @@ const ProjectRegisterPage: React.FC = () => {
         status: 'nao-iniciado',
         observations: '',
         responsibleId: user?.id || '',
-      }));
+      });
     } catch (err) {
       setError('Erro ao cadastrar projeto');
       console.error(err);
@@ -80,17 +103,15 @@ const ProjectRegisterPage: React.FC = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-6">
-        {error}
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">Cadastrar Novo Projeto</h1>
+      
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded mb-6">
+          {error}
+        </div>
+      )}
       
       {success && (
         <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded mb-6">
@@ -157,7 +178,7 @@ const ProjectRegisterPage: React.FC = () => {
             </select>
           </div>
           
-          <div className="md:col-span-3">
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Data de Assinatura
             </label>
@@ -225,7 +246,7 @@ const ProjectRegisterPage: React.FC = () => {
               value={formData.observations}
               onChange={(e) => setFormData({ ...formData, observations: e.target.value })}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
-              rows="4"
+              rows={4}
             />
           </div>
         </div>

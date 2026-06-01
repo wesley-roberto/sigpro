@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
 import { companyService, concessionaireService } from '../services/api';
 
 type RegisterFormType = 'company' | 'concessionaire';
@@ -8,11 +7,17 @@ interface RegisterFormProps {
   type: RegisterFormType;
 }
 
+interface FormState {
+  name: string;
+  description: string;
+  signatureDate: string;
+}
+
 const RegisterForm: React.FC<RegisterFormProps> = ({ type }) => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormState>({
     name: '',
     description: '',
-    signatureDate: '', // Only for concessionaire
+    signatureDate: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -25,26 +30,25 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ type }) => {
 
     try {
       setLoading(true);
-      let result;
-      
+
       if (type === 'company') {
-        result = await companyService.create({
+        await companyService.create({
           name: formData.name,
-          description: formData.description
+          description: formData.description || undefined,
         });
       } else {
-        result = await concessionaireService.create({
+        await concessionaireService.create({
           name: formData.name,
-          description: formData.description,
-          signatureDate: formData.signatureDate
+          signatureDate: new Date(formData.signatureDate),
+          description: formData.description || undefined,
         });
       }
-      
+
       setSuccess(`${type === 'company' ? 'Empresa' : 'Concessionária'} cadastrada com sucesso!`);
       setFormData({
         name: '',
         description: '',
-        signatureDate: type === 'concessionaire' ? '' : undefined
+        signatureDate: '',
       });
     } catch (err) {
       setError('Erro ao cadastrar');
@@ -61,6 +65,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ type }) => {
           Nome
         </label>
         <input
+          type="text"
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
@@ -77,7 +82,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ type }) => {
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-900"
-          rows="3"
+          rows={3}
           placeholder="Digite a descrição (opcional)"
         />
       </div>
