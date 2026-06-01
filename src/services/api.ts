@@ -16,7 +16,8 @@ export const authService = {
       throw new Error('Credenciais inválidas');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async getCurrentUser(): Promise<User> {
@@ -35,7 +36,8 @@ export const authService = {
       throw new Error('Não autenticado');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };
 
@@ -52,7 +54,8 @@ export const companyService = {
       throw new Error('Erro ao buscar empresas');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async create(company: Omit<Company, 'id' | 'createdAt' | 'updatedAt'>): Promise<Company> {
@@ -70,7 +73,8 @@ export const companyService = {
       throw new Error('Erro ao criar empresa');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };
 
@@ -87,7 +91,8 @@ export const concessionaireService = {
       throw new Error('Erro ao buscar concessionárias');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async create(concessionaire: Omit<Concessionaire, 'id' | 'createdAt' | 'updatedAt'>): Promise<Concessionaire> {
@@ -105,7 +110,8 @@ export const concessionaireService = {
       throw new Error('Erro ao criar concessionária');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };
 
@@ -122,7 +128,8 @@ export const productService = {
       throw new Error('Erro ao buscar produtos');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };
 
@@ -139,7 +146,8 @@ export const projectService = {
       throw new Error('Erro ao buscar projetos');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async create(project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>): Promise<Project> {
@@ -157,7 +165,8 @@ export const projectService = {
       throw new Error('Erro ao criar projeto');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async update(id: string, project: Partial<Project>): Promise<Project> {
@@ -175,7 +184,8 @@ export const projectService = {
       throw new Error('Erro ao atualizar projeto');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 
   async delete(id: string): Promise<void> {
@@ -206,7 +216,8 @@ export const scheduleService = {
       throw new Error('Erro ao buscar cronograma');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };
 
@@ -223,6 +234,7 @@ export const dashboardService = {
       throw new Error('Erro ao buscar dados do dashboard');
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };

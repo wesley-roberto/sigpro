@@ -71,8 +71,19 @@ exports.login = (req, res) => {
 };
 
 exports.getCurrentUser = (req, res) => {
+  // Lookup the full user from our mock database
+  const user = mockUsers.find(u => u.id === req.user.id);
+  if (!user) {
+    return res.status(404).json({ success: false, error: 'User not found' });
+  }
+
   res.json({
     success: true,
-    data: req.user
+    data: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }
   });
 };
