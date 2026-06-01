@@ -27,8 +27,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (token) {
       authService.getCurrentUser()
         .then(userData => {
-          const u: User = Array.isArray(userData) ? userData[0] : userData;
-          setUser(u);
+          setUser(userData);
           setIsAuthenticated(true);
         })
         .catch(() => {
@@ -44,8 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (credentials: LoginCredentials): Promise<boolean> => {
     try {
-      const response = await authService.login(credentials.email, credentials.password);
-      const result = response as unknown as { user: User; token: string };
+      const result = await authService.login(credentials.email, credentials.password);
       setUser(result.user);
       setIsAuthenticated(true);
       localStorage.setItem('token', result.token);
